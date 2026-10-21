@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kuiz PSV Tahun 4 - Tema Burung Comel 🦜🎨</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-color: #E8F5E9;
+      --card-bg: #FFFFFF;
+      --primary: #4CAF50;
+      --primary-dark: #2E7D32;
+      --secondary: #00BCD4;
+      --accent: #FFEB3B;
+      --text-dark: #1B5E20;
+      --correct: #C8E6C9;
+      --wrong: #FFCDD2;
+      --anime-border: 4px solid #1B5E20;
+      --font-heading: 'Fredoka One', cursive;
+      --font-body: 'Quicksand', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-color);
+      background-image: 
+        radial-gradient(#81C784 15%, transparent 16%),
+        radial-gradient(#80DEEA 15%, transparent 16%);
+      background-size: 50px 50px;
+      background-position: 0 0, 25px 25px;
+      font-family: var(--font-body);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body.shake {
+      animation: shakeScreen 0.4s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes shakeScreen {
+      10%, 90% { transform: translate3d(-3px, 0, 0); }
+      20%, 80% { transform: translate3d(5px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+      40%, 60% { transform: translate3d(8px, 0, 0); }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      background: var(--card-bg);
+      border-radius: 24px;
+      border: var(--anime-border);
+      box-shadow: 8px 8px 0px #1B5E20;
+      padding: 25px;
+      position: relative;
+      z-index: 10;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 3px dashed #1B5E20;
+      padding-bottom: 12px;
+    }
+
+    .app-title {
+      font-family: var(--font-heading);
+      color: var(--primary-dark);
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-btns { display: flex; gap: 8px; }
+
+    .btn-icon {
+      background: #FFF;
+      border: var(--anime-border);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      box-shadow: 2px 2px 0px #1B5E20;
+    }
+
+    .btn-icon:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0px #1B5E20; }
+
+    .timer-container {
+      margin-bottom: 15px;
+      background: #E0E0E0;
+      border-radius: 12px;
+      height: 20px;
+      overflow: hidden;
+      position: relative;
+      border: 2px solid #1B5E20;
+    }
+
+    .timer-bar {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #81C784, #00BCD4);
+      transition: width 1s linear;
+    }
+
+    .timer-text {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #1B5E20;
+    }
+
+    .bird-mascot-container {
+      text-align: center;
+      margin-bottom: 10px;
+      height: 95px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .bird-svg {
+      width: 85px;
+      height: 85px;
+      filter: drop-shadow(3px 3px 0px #1B5E20);
+    }
+
+    .bird-speech {
+      position: absolute;
+      top: 0;
+      right: 10%;
+      background: #FFF;
+      border: 2px solid #1B5E20;
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      box-shadow: 3px 3px 0px #1B5E20;
+      max-width: 200px;
+      z-index: 5;
+    }
+
+    .progress-bar-wrap {
+      background: #FFF;
+      border: 2px solid #1B5E20;
+      border-radius: 12px;
+      height: 12px;
+      width: 100%;
+      margin-bottom: 15px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .question-text {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      color: #1B5E20;
+      margin-bottom: 15px;
+      line-height: 1.4;
+      text-align: center;
+      background: #E8F5E9;
+      padding: 12px;
+      border-radius: 16px;
+      border: 2px solid #1B5E20;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 480px) {
+      .options-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .option-btn {
+      background: #FFF;
+      border: 3px solid #1B5E20;
+      border-radius: 16px;
+      padding: 12px 15px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+      box-shadow: 3px 3px 0px #1B5E20;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      background: #F1F8E9;
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px #1B5E20;
+    }
+
+    .option-btn.correct {
+      background-color: var(--correct) !important;
+      border-color: #1B5E20 !important;
+      color: #1B5E20 !important;
+    }
+
+    .option-btn.wrong {
+      background-color: var(--wrong) !important;
+      border-color: #1B5E20 !important;
+      color: #B71C1C !important;
+    }
+
+    .explanation-box {
+      margin-top: 15px;
+      background: #FFFDE7;
+      border: 2px solid #1B5E20;
+      border-radius: 16px;
+      padding: 12px;
+      font-size: 0.9rem;
+      box-shadow: 3px 3px 0px #1B5E20;
+      display: none;
+    }
+
+    .explanation-title {
+      font-weight: bold;
+      color: #E65100;
+      margin-bottom: 4px;
+    }
+
+    .peck-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 100;
+      display: none;
+      border-radius: 24px;
+      background: rgba(239, 83, 80, 0.2);
+    }
+
+    .btn-main {
+      background: var(--primary);
+      color: white;
+      border: var(--anime-border);
+      border-radius: 18px;
+      padding: 12px 20px;
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px #1B5E20;
+      transition: all 0.2s;
+      display: inline-block;
+      margin-top: 15px;
+      width: 100%;
+    }
+
+    .btn-main:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #1B5E20;
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .results-box { text-align: center; }
+
+    .score-badge {
+      font-family: var(--font-heading);
+      font-size: 3rem;
+      color: var(--primary-dark);
+      margin: 10px 0;
+    }
+
+    .leaderboard-box {
+      background: #FFF8E1;
+      border: 2px solid #1B5E20;
+      border-radius: 16px;
+      padding: 15px;
+      margin-top: 20px;
+      text-align: left;
+      box-shadow: 4px 4px 0px #1B5E20;
+    }
+
+    .leaderboard-title {
+      font-family: var(--font-heading);
+      color: #F57F17;
+      margin-bottom: 10px;
+    }
+
+    .leaderboard-list {
+      list-style-position: inside;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .leaderboard-list li {
+      padding: 5px 0;
+      border-bottom: 1px dashed #FFE082;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .input-name-group {
+      display: flex;
+      gap: 8px;
+      margin: 15px 0;
+    }
+
+    .input-name-group input {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid #1B5E20;
+      border-radius: 12px;
+      font-family: var(--font-body);
+      font-weight: bold;
+    }
+
+    .input-name-group button {
+      width: auto;
+      margin-top: 0;
+      padding: 0 18px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="app-title">🦜 PSV Tahun 4 (Tema Burung Comel)</div>
+    <div class="nav-btns">
+      <button class="btn-icon" id="btn-sound" title="Bunyi On/Off">🔊</button>
+    </div>
+  </header>
+
+  <div id="peck-overlay" class="peck-overlay"></div>
+
+  <!-- SCREEN: START -->
+  <div id="screen-start" class="screen active">
+    <div class="bird-mascot-container">
+      <div class="bird-speech">Chirp chirp! Jom jawab 30 soalan PSV Tahun 4! 🐥</div>
+      <svg class="bird-svg" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="35" fill="#81C784" stroke="#1B5E20" stroke-width="3"/>
+        <polygon points="50,45 75,50 50,55" fill="#FFB74D" stroke="#1B5E20" stroke-width="2"/>
+        <circle cx="40" cy="40" r="5" fill="#1B5E20"/>
+        <circle cx="42" cy="38" r="2" fill="#FFF"/>
+        <path d="M 25 50 Q 15 40 20 60 Z" fill="#4CAF50" stroke="#1B5E20" stroke-width="2"/>
+      </svg>
+    </div>
+
+    <h2 style="text-align:center; font-family:var(--font-heading); margin-bottom:10px;">Latihan Tambahan PSV Tahun 4</h2>
+    <p style="text-align:center; color:#2E7D32; margin-bottom:15px; font-size:0.95rem;">30 Soalan · Masa 20 saat setiap soalan · Kena patuk jika salah!</p>
+
+    <button class="btn-main" onclick="startQuiz()">Mula Kuiz Sekarang! 🎯</button>
+
+    <div class="leaderboard-box">
+      <div class="leaderboard-title">🏆 Top 10 Markah Tertinggi</div>
+      <ol id="start-leaderboard" class="leaderboard-list">
+        <li><span>Belum ada rekod</span> <span>-</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- SCREEN: QUIZ -->
+  <div id="screen-quiz" class="screen">
+    <div class="timer-container">
+      <div id="timer-bar" class="timer-bar"></div>
+      <div id="timer-text" class="timer-text">20s</div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div id="progress-bar" class="progress-bar-fill"></div>
+    </div>
+
+    <div class="bird-mascot-container">
+      <div class="bird-speech" id="quiz-bird-speech">Fikir betul-betul tau! 🦜</div>
+      <svg class="bird-svg" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="35" fill="#81C784" stroke="#1B5E20" stroke-width="3"/>
+        <polygon points="50,45 75,50 50,55" fill="#FFB74D" stroke="#1B5E20" stroke-width="2"/>
+        <circle cx="40" cy="40" r="5" fill="#1B5E20"/>
+        <circle cx="42" cy="38" r="2" fill="#FFF"/>
+        <path d="M 25 50 Q 15 40 20 60 Z" fill="#4CAF50" stroke="#1B5E20" stroke-width="2"/>
+      </svg>
+    </div>
+
+    <div id="question-text" class="question-text">Soalan loading...</div>
+    <div id="options-grid" class="options-grid"></div>
+
+    <div id="explanation-box" class="explanation-box">
+      <div class="explanation-title">💡 Huraian Jawapan Betul:</div>
+      <div id="explanation-text"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN: RESULT -->
+  <div id="screen-result" class="screen">
+    <div class="results-box">
+      <h2 style="font-family:var(--font-heading);">Syabas! Tamat Kuiz! 🎉</h2>
+      
+      <div id="final-percentage" class="score-badge">0%</div>
+      <div style="font-weight:bold; font-size:1.1rem; margin-bottom:15px;">Anda mendapat <span id="final-score-text" style="color:var(--primary-dark);">0 / 30</span> betul!</div>
+
+      <div id="save-score-container" class="input-name-group">
+        <input type="text" id="player-name-input" placeholder="Masukkan nama murid..." maxlength="15">
+        <button class="btn-main" onclick="saveScore()">Simpan</button>
+      </div>
+
+      <button class="btn-main" onclick="startQuiz()" style="background:#00BCD4;">Cuba Lagi 🔄</button>
+
+      <div class="leaderboard-box">
+        <div class="leaderboard-title">🏆 Carta Top 10 High Scores</div>
+        <ol id="result-leaderboard" class="leaderboard-list"></ol>
+        <button onclick="resetLeaderboard()" style="margin-top:10px; background:none; border:none; color:#D32F2F; font-size:0.8rem; cursor:pointer; text-decoration:underline; width:100%;">Reset Rekod (Guru)</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // 30 SOALAN PSV TAHUN 4 + HURAIAN
+  const questions = [
+    { q: "1. Antara berikut, yang manakah merupakan unsur seni?", opts: ["Imbangan", "Garisan", "Harmoni", "Penegasan"], ans: 1, exp: "Garisan merupakan salah satu daripada Unsur Seni asas." },
+    { q: "2. Apakah unsur seni yang terbentuk apabila garisan bertemu dan membentuk kawasan tertutup?", opts: ["Rupa", "Warna", "Jalinan", "Ruang"], ans: 0, exp: "Rupa terhasil daripada garisan yang bertemu di kedua-dua penghujungnya." },
+    { q: "3. Apakah perbezaan antara bentuk dengan rupa?", opts: ["Rupa mempunyai isipadu, bentuk tidak", "Bentuk mempunyai isipadu, rupa bersifat dua dimensi", "Kedua-duanya sentiasa rata", "Rupa mempunyai tiga dimensi"], ans: 1, exp: "Bentuk bersifat 3 dimensi (mempunyai isipadu), manakala rupa bersifat 2 dimensi (rata)." },
+    { q: "4. Permukaan kulit buah durian yang berduri menunjukkan unsur seni...", opts: ["Warna", "Ruang", "Jalinan", "Rupa"], ans: 2, exp: "Jalinan sentuh pada durian boleh dirasai dan disentuh." },
+    { q: "5. Prinsip rekaan yang menjadikan karya kelihatan stabil ialah...", opts: ["Kontra", "Imbangan", "Penegasan", "Pergerakan"], ans: 1, exp: "Imbangan memberikan kesannya kestabilan pada gubahan karya." },
+    { q: "6. Apakah tujuan pengulangan motif dalam sesuatu corak?", opts: ["Menghasilkan kesan irama dan susunan", "Menghilangkan semua bentuk", "Menjadikan karya kosong", "Mengurangkan bilangan unsur seni"], ans: 0, exp: "Pengulangan motif terancang menghasilkan kesan irama dan pergerakan yang teratur." },
+    { q: "7. Unsur seni yang menunjukkan kawasan jauh dan dekat dalam lukisan ialah...", opts: ["Garisan", "Warna", "Ruang", "Jalinan"], ans: 2, exp: "Ruang menunjukkan jarak kedudukan antara objek (dekat/jauh)." },
+    { q: "8. Apabila satu objek dibuat lebih menonjol daripada objek lain, prinsip rekaan yang digunakan ialah...", opts: ["Penegasan", "Imbangan", "Harmoni", "Kesatuan"], ans: 0, exp: "Penegasan bertindak menarik tumpuan utama pemerhati." },
+    { q: "9. Apakah yang dimaksudkan dengan kontra dalam karya seni?", opts: ["Pengulangan motif yang sama", "Perbezaan ketara antara unsur seni", "Penggunaan satu warna sahaja", "Susunan objek yang seragam"], ans: 1, exp: "Kontra wujud apabila unsur seni mempunyai ciri-ciri yang berlawanan/berbeza." },
+    { q: "10. Susunan warna dan bentuk yang kelihatan sesuai serta serasi menunjukkan prinsip...", opts: ["Harmoni", "Kontra", "Pergerakan", "Penegasan"], ans: 0, exp: "Harmoni wujud apabila elemen seni disusun seimbang dan selesa dipandang." },
+    { q: "11. Warna sekunder yang terhasil daripada campuran merah dan kuning ialah...", opts: ["Hijau", "Ungu", "Jingga", "Biru"], ans: 2, exp: "Campuran warna Merah + Kuning menghasilkan warna Jingga." },
+    { q: "12. Campuran warna biru dengan kuning menghasilkan...", opts: ["Merah", "Hijau", "Jingga", "Ungu"], ans: 1, exp: "Campuran warna Biru + Kuning menghasilkan warna Hijau." },
+    { q: "13. Antara berikut, yang manakah warna primer?", opts: ["Hijau", "Jingga", "Ungu", "Kuning"], ans: 3, exp: "Warna primer/asas terdiri daripada Merah, Biru, dan Kuning." },
+    { q: "14. Warna yang lazimnya memberikan kesan sejuk ialah...", opts: ["Merah", "Jingga", "Biru", "Kuning"], ans: 2, exp: "Biru dan Hijau tergolong dalam kumpulan warna sejuk." },
+    { q: "15. Apakah alat yang sesuai digunakan untuk menghasilkan catan?", opts: ["Berus dan cat air", "Pahat dan kayu", "Jarum dan benang sahaja", "Gunting sahaja"], ans: 0, exp: "Catan menggunakan media basah seperti cat air dan berus." },
+    { q: "16. Teknik menampal cebisan kertas pada permukaan untuk menghasilkan gambar dikenali sebagai...", opts: ["Catan", "Kolaj", "Lukisan", "Anyaman"], ans: 1, exp: "Kolaj dihasilkan dengan menampal pelbagai ceraian bahan pada permukaan." },
+    { q: "17. Apakah alat yang sesuai digunakan untuk menghasilkan garisan pensel yang jelas?", opts: ["Span", "Pensel yang diraut", "Penggelek cat", "Canting"], ans: 1, exp: "Pensel tajam yang diraut memberikan hasil garisan yang halus dan jelas." },
+    { q: "18. Teknik menghasilkan gambar dengan memindahkan dakwat daripada permukaan bercorak dikenali sebagai...", opts: ["Cetakan", "Arca", "Lukisan", "Catan"], ans: 0, exp: "Cetakan memindahkan imej berulangan menggunakan blok khas." },
+    { q: "19. Melipat, menggunting dan menyusun kertas berwarna membantu menghasilkan...", opts: ["Corak dan rekaan", "Arca batu sahaja", "Catan minyak sahaja", "Anyaman rotan sahaja"], ans: 0, exp: "Lipatan dan guntingan kertas merupakan teknik menghasilkan corak terancang." },
+    { q: "20. Apakah bahan yang sesuai untuk menghasilkan arca mudah daripada bahan terbuang?", opts: ["Kotak terpakai", "Air sahaja", "Cat air sahaja", "Kertas tidak dipotong"], ans: 0, exp: "Kotak terpakai mudah dipotong dan dibentuk menjadi struktur arca 3D." },
+    { q: "21. Bahan yang biasa digunakan untuk aktiviti anyaman tradisional ialah...", opts: ["Mengkuang", "Kaca cecair", "Cat poster", "Kapur tulis"], ans: 0, exp: "Daun mengkuang dan pandan merupakan bahan asas kraf anyaman." },
+    { q: "22. Apakah fungsi lakaran sebelum menghasilkan karya seni?", opts: ["Merancang idea dan susunan objek", "Menggantikan semua bahan seni", "Mengelakkan kreativiti", "Menjadikan karya tidak disiapkan"], ans: 0, exp: "Lakaran ringkas merancang komposisi idea sebelum menghasilkan karya sebenar." },
+    { q: "23. Apakah ciri poster yang baik?", opts: ["Tulisan kecil dan sukar dibaca", "Mesej jelas dan ilustrasi sesuai", "Terlalu banyak maklumat", "Tiada tajuk atau mesej"], ans: 1, exp: "Poster yang efektif mempunyai tajuk yang menonjol dan mesej grafik yang jelas." },
+    { q: "24. Apakah maksud apresiasi seni?", opts: ["Menghayati dan memberikan pandangan tentang karya seni", "Menyalin karya orang lain", "Membuang hasil karya", "Mewarna tanpa melihat"], ans: 0, exp: "Apresiasi ialah proses menceritakan, menilai, dan menghargai keindahan karya." },
+    { q: "25. Apabila memberikan komen tentang karya rakan, kita hendaklah...", opts: ["Mengejek hasil karya", "Memberikan pandangan yang membina dan sopan", "Merosakkan karya", "Mengendahkan karya"], ans: 1, exp: "Kritikan positif dan berhemah menyokong perkembangan bakat rakan." },
+    { q: "26. Apakah unsur yang paling penting dalam penghasilan lukisan garisan?", opts: ["Gunting", "Pensel / Pen", "Minyak masak", "Pelekat"], ans: 1, exp: "Pensel atau pen merupakan alat asas menggubah garisan." },
+    { q: "27. Warna asas juga dikenali sebagai...", opts: ["Warna primer", "Warna sekunder", "Warna tertier", "Warna gelap"], ans: 0, exp: "Warna primer merupakan warna utama yang tidak boleh dihasilkan melalui campuran lain." },
+    { q: "28. Apakah yang membezakan karya 2D dan 3D?", opts: ["Karya 3D mempunyai saiz dan kedalaman ruang sebenar", "Karya 2D boleh dipegang", "Tiada perbezaan", "Karya 2D lebih berat"], ans: 0, exp: "Karya 3D mempunyai kedalaman dan isipadu yang boleh dipandang dari semua arah." },
+    { q: "29. Garisan berombak memberikan kesan...", opts: ["Pergerakan lembut dan tenang", "Keras dan tajam", "Kaku", "Bahaya"], ans: 0, exp: "Garisan berombak membawakan ilusi aliran air atau angin yang lembut." },
+    { q: "30. Mengapakah kebersihan stesen kerja penting selepas aktiviti seni?", opts: ["Untuk keselamatan dan keselesaan bersama", "Supaya boleh membuang semua alatan", "Agar bahan cepat habis", "Supaya kelas menjadi berhabuk"], ans: 0, exp: "Menjaga kebersihan memupuk disiplin dan mengelakkan kemalangan di bilik seni." }
+  ];
+
+  let currentQIndex = 0;
+  let score = 0;
+  let timerInterval = null;
+  let timeLeft = 20;
+  let soundEnabled = true;
+  let audioCtx = null;
+
+  function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+  }
+
+  document.getElementById('btn-sound').onclick = () => {
+    soundEnabled = !soundEnabled;
+    document.getElementById('btn-sound').innerText = soundEnabled ? '🔊' : '🔇';
+  };
+
+  window.onload = () => renderLeaderboards();
+
+  function initAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  // CUTE BIRD TWEET SOUND
+  function playBirdTweetSound() {
+    if (!soundEnabled) return;
+    initAudio();
+    const now = audioCtx.currentTime;
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1200, now);
+    osc.frequency.exponentialRampToValueAtTime(2200, now + 0.1);
+    osc.frequency.exponentialRampToValueAtTime(1500, now + 0.25);
+
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.3, now + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.25);
+  }
+
+  // BIRD PECK & ANGRY SOUND
+  function playBirdPeckSound() {
+    if (!soundEnabled) return;
+    initAudio();
+    const now = audioCtx.currentTime;
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(300, now);
+    osc.frequency.exponentialRampToValueAtTime(80, now + 0.15);
+
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.15);
+  }
+
+  function startQuiz() {
+    score = 0;
+    currentQIndex = 0;
+    showScreen('screen-quiz');
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    if (currentQIndex >= questions.length) {
+      finishQuiz();
+      return;
+    }
+
+    clearInterval(timerInterval);
+    timeLeft = 20;
+    updateTimerUI();
+
+    document.getElementById('explanation-box').style.display = 'none';
+
+    const qData = questions[currentQIndex];
+    document.getElementById('question-text').innerText = qData.q;
+    
+    const progress = ((currentQIndex) / questions.length) * 100;
+    document.getElementById('progress-bar').style.width = progress + '%';
+
+    document.getElementById('quiz-bird-speech').innerText = `Soalan ${currentQIndex + 1} daripada 30! 🦜`;
+
+    const grid = document.getElementById('options-grid');
+    grid.innerHTML = '';
+
+    qData.opts.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
+      btn.onclick = () => selectAnswer(idx);
+      grid.appendChild(btn);
+    });
+
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateTimerUI();
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        handleTimeout();
+      }
+    }, 1000);
+  }
+
+  function updateTimerUI() {
+    const timerBar = document.getElementById('timer-bar');
+    const timerText = document.getElementById('timer-text');
+    const percentage = (timeLeft / 20) * 100;
+
+    timerBar.style.width = percentage + '%';
+    timerText.innerText = timeLeft + 's';
+
+    if (timeLeft <= 5) {
+      timerBar.style.background = '#FF5252';
+    } else {
+      timerBar.style.background = 'linear-gradient(90deg, #81C784, #00BCD4)';
+    }
+  }
+
+  function selectAnswer(selectedIdx) {
+    clearInterval(timerInterval);
+    const qData = questions[currentQIndex];
+    const btns = document.querySelectorAll('.option-btn');
+
+    btns.forEach(b => b.disabled = true);
+
+    if (selectedIdx === qData.ans) {
+      score++;
+      btns[selectedIdx].classList.add('correct');
+      document.getElementById('quiz-bird-speech').innerText = "Chirp! Jawapan Betul! 🐥";
+      playBirdTweetSound();
+      
+      setTimeout(() => {
+        currentQIndex++;
+        loadQuestion();
+      }, 1200);
+    } else {
+      btns[selectedIdx].classList.add('wrong');
+      btns[qData.ans].classList.add('correct');
+      triggerPeckAndShake();
+      document.getElementById('quiz-bird-speech').innerText = "Auch! Kena patuk burung! 🦜";
+      playBirdPeckSound();
+
+      document.getElementById('explanation-text').innerText = qData.exp;
+      document.getElementById('explanation-box').style.display = 'block';
+
+      setTimeout(() => {
+        currentQIndex++;
+        loadQuestion();
+      }, 3500);
+    }
+  }
+
+  function handleTimeout() {
+    const qData = questions[currentQIndex];
+    const btns = document.querySelectorAll('.option-btn');
+    btns.forEach(b => b.disabled = true);
+    btns[qData.ans].classList.add('correct');
+
+    triggerPeckAndShake();
+    document.getElementById('quiz-bird-speech').innerText = "Masa Habis! Kena patuk! 🦜";
+    playBirdPeckSound();
+
+    document.getElementById('explanation-text').innerText = qData.exp;
+    document.getElementById('explanation-box').style.display = 'block';
+
+    setTimeout(() => {
+      currentQIndex++;
+      loadQuestion();
+    }, 3500);
+  }
+
+  function triggerPeckAndShake() {
+    const overlay = document.getElementById('peck-overlay');
+    overlay.style.display = 'block';
+    document.body.classList.add('shake');
+
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      document.body.classList.remove('shake');
+    }, 400);
+  }
+
+  function finishQuiz() {
+    showScreen('screen-result');
+    const percentage = Math.round((score / questions.length) * 100);
+    
+    document.getElementById('final-percentage').innerText = percentage + '%';
+    document.getElementById('final-score-text').innerText = `${score} / ${questions.length}`;
+
+    if (percentage >= 70) {
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+    }
+
+    renderLeaderboards();
+  }
+
+  function getLeaderboard() {
+    return JSON.parse(localStorage.getItem('psv_tahun4_bird_board')) || [];
+  }
+
+  function saveScore() {
+    const nameInput = document.getElementById('player-name-input');
+    const name = nameInput.value.trim() || 'Murid PSV';
+
+    const board = getLeaderboard();
+    board.push({ name, score, total: questions.length });
+    
+    board.sort((a,b) => (b.score/b.total) - (a.score/a.total));
+    const top10 = board.slice(0, 10);
+
+    localStorage.setItem('psv_tahun4_bird_board', JSON.stringify(top10));
+    document.getElementById('save-score-container').style.display = 'none';
+    renderLeaderboards();
+  }
+
+  function renderLeaderboards() {
+    const board = getLeaderboard();
+    const format = (items) => {
+      if (items.length === 0) return '<li><span>Belum ada rekod</span> <span>-</span></li>';
+      return items.map(item => `<li><span>${item.name}</span> <span>${item.score}/${item.total}</span></li>`).join('');
+    };
+
+    document.getElementById('start-leaderboard').innerHTML = format(board);
+    document.getElementById('result-leaderboard').innerHTML = format(board);
+  }
+
+  function resetLeaderboard() {
+    if (confirm("Padam semua rekod markah murid?")) {
+      localStorage.removeItem('psv_tahun4_bird_board');
+      renderLeaderboards();
+    }
+  }
+</script>
+</body>
+</html>
